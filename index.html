@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {
+                text-align: center;
+                color: white;
+                background-color: blue;
+            }
+            canvas {
+                width: 39%;
+                background-color: blue;
+            }
+            img {
+                display: none;
+            }
+        
+            #logo {
+                display: inline;
+                width: 9%;
+            }
+        </style>
+        
+        <title></title>
+    </head>
+    
+    <body>
+        <audio src="Riptide.wav" autoplay="autoplay" loop="loop"></audio>
+        <img id="player_front" src="player_front.gif">
+        <img id="player_back" src="player_back.png">
+        <img id="player_left" src="player_left.png">
+        <img id="player_right" src="player_right.png">
+        <img id="water" src="water.PNG">
+        <img id="sand" src="sand.PNG">
+        <img id="grass" src="grass.PNG">
+        <img id="dirt" src="dirt.PNG">
+        <img id="stone" src="stone.PNG">
+        <img id="s_stone" src="s_stone.PNG">
+        <img id="ship" src="ship.png">
+        <img id="crab" src="crab.gif">
+        <img id="chopper" src="chopper.gif">
+        
+        
+        <img id="logo" src="HT.PNG">
+        <img id="logo" src="logo.dib">
+        <p id="timer">30</p>
+        <canvas id="game"></canvas>
+        <script>
+            
+            var canvas = document.getElementById("game");
+            var ctx = canvas.getContext("2d");
+            
+            //can't do this with css for some reason? idk but whatever
+            document.getElementById("game").height = 1360;
+            document.getElementById("game").width = 1360;
+            
+            
+            //screen
+            var screen = 1;
+            
+            //start coords
+            var player_x = 960;
+            var player_y = 880;
+            var player_xy = player_x + "," + player_y;
+
+            
+            window.addEventListener("keyup", binds, false);
+            function binds(e) {
+            
+                //test for which key pressed and set coordinates
+                if (e.keyCode == "40") {
+                    //go down
+                    player_y = player_y + 80;
+                    tile290.image = player_front;
+                } else if (e.keyCode == "39") {
+                    //go right
+                    player_x = player_x + 80;
+                    tile290.image = player_right;
+                } else if (e.keyCode == "38") {
+                    //go up
+                    player_y = player_y - 80;
+                    tile290.image = player_back;
+                } else if (e.keyCode == "37") {
+                    //go left
+                    tile290.image = player_left;
+                    player_x = player_x - 80;
+                }
+            }
+            
+            window.addEventListener("keyup", binds2, false);
+            var laserStart = {x:0, y:0};
+            var laserEnd = {x:0, y:0};
+            var shoot = true;
+            var shootVis = false;
+            function binds2(a) {
+                
+                if (shoot) {
+                    
+                    //test for which key pressed and set coordinates 1360
+                    if (a.keyCode == "87") {
+                        tile290.image = player_back;
+                        shoot = false;
+                    shootVis = true;
+                        
+                        laserStart.x = player_x + 40;
+                    laserStart.y = player_y + 40;
+                        
+                        laserEnd.y = 0;
+                        laserEnd.x = player_x + 40;
+                        
+                        if (player_y > tile293.y && player_x == tile293.x) {
+                            tile293.x = -80;
+                            tile293.y = 0;
+                        }
+                        
+                        if (player_y > tile291.y && player_x == tile291.x) {
+                            tile291.x = 1360;
+                            tile291.y = 1360;
+                        }
+                    } else if (a.keyCode == "65") {
+                        tile290.image = player_left;
+                        shoot = false;
+                    shootVis = true;
+                        
+                        laserStart.x = player_x + 40;
+                    laserStart.y = player_y + 40;
+                        
+                        laserEnd.x = 0;
+                        laserEnd.y = player_y + 40;
+                        
+                        if (player_x > tile293.x && player_y == tile293.y) {
+                            tile293.x = -80;
+                            tile293.y = 0;
+                        }
+                        
+                        if (player_x > tile291.x && player_y == tile291.y) {
+                            tile291.x = 1360;
+                            tile291.y = 1360;
+                        }
+                    } else if (a.keyCode == "68") {
+                        tile290.image = player_right;
+                        shoot = false;
+                    shootVis = true;
+                        
+                        laserStart.x = player_x + 40;
+                    laserStart.y = player_y + 40;
+                        
+                        laserEnd.x = 1360;
+                        laserEnd.y = player_y + 40;
+                        
+                        if (player_x < tile293.x && player_y == tile293.y) {
+                            tile293.x = -80;
+                            tile293.y = 0;
+                        }
+                        
+                        if (player_x < tile291.x && player_y == tile291.y) {
+                            tile291.x = 1360;
+                            tile291.y = 1360;
+                        }
+                    } else if (a.keyCode == "83") {
+                        tile290.image = player_front;
+                        shoot = false;
+                    shootVis = true;
+                        
+                        laserStart.x = player_x + 40;
+                    laserStart.y = player_y + 40;
+                        
+                        laserEnd.y = 1360;
+                        laserEnd.x = player_x + 40;
+                        
+                        if (player_y < tile293.y && player_x == tile293.x) {
+                            tile293.x = -80;
+                            tile293.y = 0;
+                        }
+                        
+                        if (player_y < tile291.y && player_x == tile291.x) {
+                            tile291.x = 1360;
+                            tile291.y = 1360;
+                        }
+                    }
+                    
+                }
+            }
+            window.setInterval(function(){ enableshoot(); }, 1000);
+            function enableshoot() {
+                shoot = true;
+                shootVis = false;
+            }
+
+            
+            
+
+            //tiles
+            var tiles = [];
+            
+                //collum 1
+                var tile0 = {x:0, y:0, type:"water", image:water}; tiles.push(tile0);
+                var tile1 = {x:0, y:80, type:"water", image:water}; tiles.push(tile1);
+                var tile2 = {x:0, y:160, type:"water", image:water}; tiles.push(tile2);
+                var tile3 = {x:0, y:240, type:"water", image:water}; tiles.push(tile3);
+                var tile4 = {x:0, y:320, type:"water", image:water}; tiles.push(tile4);
+                var tile5 = {x:0, y:400, type:"water", image:water}; tiles.push(tile5);
+                var tile6 = {x:0, y:480, type:"water", image:water}; tiles.push(tile6);
+                var tile7 = {x:0, y:560, type:"water", image:water}; tiles.push(tile7);
+                var tile8 = {x:0, y:640, type:"water", image:water}; tiles.push(tile8);
+                var tile9 = {x:0, y:720, type:"water", image:water}; tiles.push(tile9);
+                var tile10 = {x:0, y:800, type:"water", image:water}; tiles.push(tile10);
+                var tile11 = {x:0, y:880, type:"water", image:water}; tiles.push(tile11);
+                var tile12 = {x:0, y:960, type:"water", image:water}; tiles.push(tile12);
+                var tile13 = {x:0, y:1040, type:"water", image:water}; tiles.push(tile13);
+                var tile14 = {x:0, y:1120, type:"water", image:water}; tiles.push(tile14);
+                var tile15 = {x:0, y:1200, type:"water", image:water}; tiles.push(tile15);
+                var tile16 = {x:0, y:1280, type:"water", image:water}; tiles.push(tile16);
+                
+                //collum 2
+                var tile17 = {x:80, y:0, type:"water", image:water}; tiles.push(tile17);
+                var tile18 = {x:80, y:80, type:"sand", image:sand}; tiles.push(tile18);
+                var tile19 = {x:80, y:160, type:"sand", image:sand}; tiles.push(tile19);
+                var tile20 = {x:80, y:240, type:"water", image:water}; tiles.push(tile20);
+                var tile21 = {x:80, y:320, type:"water", image:water}; tiles.push(tile21);
+                var tile22 = {x:80, y:400, type:"water", image:water}; tiles.push(tile22);
+                var tile23 = {x:80, y:480, type:"water", image:water}; tiles.push(tile23);
+                var tile24 = {x:80, y:560, type:"sand", image:sand}; tiles.push(tile24);
+                var tile25 = {x:80, y:640, type:"sand", image:sand}; tiles.push(tile25);
+                var tile26 = {x:80, y:720, type:"sand", image:sand}; tiles.push(tile26);
+                var tile27 = {x:80, y:800, type:"water", image:water}; tiles.push(tile27);
+                var tile28 = {x:80, y:880, type:"water", image:water}; tiles.push(tile28);
+                var tile29 = {x:80, y:960, type:"water", image:water}; tiles.push(tile29);
+                var tile30 = {x:80, y:1040, type:"water", image:water}; tiles.push(tile30);
+                var tile31 = {x:80, y:1120, type:"water", image:water}; tiles.push(tile31);
+                var tile32 = {x:80, y:1200, type:"water", image:water}; tiles.push(tile32);
+                var tile33 = {x:80, y:1280, type:"water", image:water}; tiles.push(tile33);
+                
+                //collum 3
+                var tile34 = {x:160, y:0, type:"water", image:water}; tiles.push(tile34);
+                var tile35 = {x:160, y:80, type:"sand", image:sand}; tiles.push(tile35);
+                var tile36 = {x:160, y:160, type:"water", image:water}; tiles.push(tile36);
+                var tile37 = {x:160, y:240, type:"water", image:water}; tiles.push(tile37);
+                var tile38 = {x:160, y:320, type:"sand", image:sand}; tiles.push(tile38);
+                var tile39 = {x:160, y:400, type:"sand", image:sand}; tiles.push(tile39);
+                var tile40 = {x:160, y:480, type:"sand", image:sand}; tiles.push(tile40);
+                var tile41 = {x:160, y:560, type:"sand", image:sand}; tiles.push(tile41);
+                var tile42 = {x:160, y:640, type:"grass", image:grass}; tiles.push(tile42);
+                var tile43 = {x:160, y:720, type:"sand", image:sand}; tiles.push(tile43);
+                var tile44 = {x:160, y:800, type:"water", image:water}; tiles.push(tile44);
+                var tile45 = {x:160, y:880, type:"water", image:water}; tiles.push(tile45);
+                var tile46 = {x:160, y:960, type:"water", image:water}; tiles.push(tile46);
+                var tile47 = {x:160, y:1040, type:"water", image:water}; tiles.push(tile47);
+                var tile48 = {x:160, y:1120, type:"water", image:water}; tiles.push(tile48);
+                var tile49 = {x:160, y:1200, type:"sand", image:sand}; tiles.push(tile49);
+                var tile50 = {x:160, y:1280, type:"water", image:water}; tiles.push(tile50);
+            
+                //collum 4
+                var tile51 = {x:240, y:0, type:"water", image:water}; tiles.push(tile51);
+                var tile52 = {x:240, y:80, type:"water", image:water}; tiles.push(tile52);
+                var tile53 = {x:240, y:160, type:"water", image:water}; tiles.push(tile53);
+                var tile54 = {x:240, y:240, type:"water", image:water}; tiles.push(tile54);
+                var tile55 = {x:240, y:320, type:"sand", image:sand}; tiles.push(tile55);
+                var tile56 = {x:240, y:400, type:"grass", image:grass}; tiles.push(tile56);
+                var tile57 = {x:240, y:480, type:"grass", image:grass}; tiles.push(tile57);
+                var tile58 = {x:240, y:560, type:"grass", image:grass}; tiles.push(tile58);
+                var tile59 = {x:240, y:640, type:"grass", image:grass}; tiles.push(tile59);
+                var tile60 = {x:240, y:720, type:"sand", image:sand}; tiles.push(tile60);
+                var tile61 = {x:240, y:800, type:"sand", image:sand}; tiles.push(tile61);
+                var tile62 = {x:240, y:880, type:"sand", image:sand}; tiles.push(tile62);
+                var tile63 = {x:240, y:960, type:"sand", image:sand}; tiles.push(tile63);
+                var tile64 = {x:240, y:1040, type:"water", image:water}; tiles.push(tile64);
+                var tile65 = {x:240, y:1120, type:"water", image:water}; tiles.push(tile65);
+                var tile66 = {x:240, y:1200, type:"sand", image:sand}; tiles.push(tile66);
+                var tile67 = {x:240, y:1280, type:"water", image:water}; tiles.push(tile67);
+            
+                //collum 5
+                var tile68 = {x:320, y:0, type:"water", image:water}; tiles.push(tile68);
+                var tile69 = {x:320, y:80, type:"water", image:water}; tiles.push(tile69);
+                var tile70 = {x:320, y:160, type:"water", image:water}; tiles.push(tile70);
+                var tile71 = {x:320, y:240, type:"sand", image:sand}; tiles.push(tile71);
+                var tile72 = {x:320, y:320, type:"sand", image:sand}; tiles.push(tile72);
+                var tile73 = {x:320, y:400, type:"grass", image:grass}; tiles.push(tile73);
+                var tile74 = {x:320, y:480, type:"dirt", image:dirt}; tiles.push(tile74);
+                var tile75 = {x:320, y:560, type:"dirt", image:dirt}; tiles.push(tile75);
+                var tile76 = {x:320, y:640, type:"grass", image:grass}; tiles.push(tile76);
+                var tile77 = {x:320, y:720, type:"grass", image:grass}; tiles.push(tile77);
+                var tile78 = {x:320, y:800, type:"grass", image:grass}; tiles.push(tile78);
+                var tile79 = {x:320, y:880, type:"grass", image:grass}; tiles.push(tile79);
+                var tile80 = {x:320, y:960, type:"sand", image:sand}; tiles.push(tile80);
+                var tile81 = {x:320, y:1040, type:"sand", image:sand}; tiles.push(tile81);
+                var tile82 = {x:320, y:1120, type:"water", image:water}; tiles.push(tile82);
+                var tile83 = {x:320, y:1200, type:"water", image:water}; tiles.push(tile83);
+                var tile84 = {x:320, y:1280, type:"water", image:water}; tiles.push(tile84);
+            
+                //collum 6
+                var tile85 = {x:400, y:0, type:"water", image:water}; tiles.push(tile85);
+                var tile86 = {x:400, y:80, type:"water", image:water}; tiles.push(tile86);
+                var tile87 = {x:400, y:160, type:"water", image:water}; tiles.push(tile87);
+                var tile88 = {x:400, y:240, type:"sand", image:sand}; tiles.push(tile88);
+                var tile89 = {x:400, y:320, type:"grass", image:grass}; tiles.push(tile89);
+                var tile90 = {x:400, y:400, type:"grass", image:grass}; tiles.push(tile90);
+                var tile91 = {x:400, y:480, type:"dirt", image:dirt}; tiles.push(tile91);
+                var tile92 = {x:400, y:560, type:"dirt", image:dirt}; tiles.push(tile92);
+                var tile93 = {x:400, y:640, type:"dirt", image:dirt}; tiles.push(tile93);
+                var tile94 = {x:400, y:720, type:"dirt", image:dirt}; tiles.push(tile94);
+                var tile95 = {x:400, y:800, type:"dirt", image:dirt}; tiles.push(tile95);
+                var tile96 = {x:400, y:880, type:"grass", image:grass}; tiles.push(tile96);
+                var tile97 = {x:400, y:960, type:"grass", image:grass}; tiles.push(tile97);
+                var tile98 = {x:400, y:1040, type:"sand", image:sand}; tiles.push(tile98);
+                var tile99 = {x:400, y:1120, type:"sand", image:sand}; tiles.push(tile99);
+                var tile100 = {x:400, y:1200, type:"water", image:water}; tiles.push(tile100);
+                var tile101 = {x:400, y:1280, type:"water", image:water}; tiles.push(tile101);
+            
+                //collum 7
+                var tile102 = {x:480, y:0, type:"water", image:water}; tiles.push(tile102);
+                var tile103 = {x:480, y:80, type:"water", image:water}; tiles.push(tile103);
+                var tile104 = {x:480, y:160, type:"sand", image:sand}; tiles.push(tile104);
+                var tile105 = {x:480, y:240, type:"sand", image:sand}; tiles.push(tile105);
+                var tile106 = {x:480, y:320, type:"grass", image:grass}; tiles.push(tile106);
+                var tile107 = {x:480, y:400, type:"dirt", image:dirt}; tiles.push(tile107);
+                var tile108 = {x:480, y:480, type:"dirt", image:dirt}; tiles.push(tile108);
+                var tile109 = {x:480, y:560, type:"stone", image:stone}; tiles.push(tile109);
+                var tile110 = {x:480, y:640, type:"stone", image:stone}; tiles.push(tile110);
+                var tile111 = {x:480, y:720, type:"stone", image:stone}; tiles.push(tile111);
+                var tile112 = {x:480, y:800, type:"dirt", image:dirt}; tiles.push(tile112);
+                var tile113 = {x:480, y:880, type:"dirt", image:dirt}; tiles.push(tile113);
+                var tile114 = {x:480, y:960, type:"grass", image:grass}; tiles.push(tile114);
+                var tile115 = {x:480, y:1040, type:"grass", image:grass}; tiles.push(tile115);
+                var tile116 = {x:480, y:1120, type:"sand", image:sand}; tiles.push(tile116);
+                var tile117 = {x:480, y:1200, type:"sand", image:sand}; tiles.push(tile117);
+                var tile118 = {x:480, y:1280, type:"water", image:water}; tiles.push(tile118);
+            
+                //collum 8
+                var tile119 = {x:560, y:0, type:"water", image:water}; tiles.push(tile119);
+                var tile120 = {x:560, y:80, type:"water", image:water}; tiles.push(tile120);
+                var tile121 = {x:560, y:160, type:"sand", image:sand}; tiles.push(tile121);
+                var tile122 = {x:560, y:240, type:"grass", image:grass}; tiles.push(tile122);
+                var tile123 = {x:560, y:320, type:"grass", image:grass}; tiles.push(tile123);
+                var tile124 = {x:560, y:400, type:"dirt", image:dirt}; tiles.push(tile124);
+                var tile125 = {x:560, y:480, type:"stone", image:stone}; tiles.push(tile125);
+                var tile126 = {x:560, y:560, type:"stone", image:stone}; tiles.push(tile126);
+                var tile127 = {x:560, y:640, type:"stone", image:stone}; tiles.push(tile127);
+                var tile128 = {x:560, y:720, type:"stone", image:stone}; tiles.push(tile128);
+                var tile129 = {x:560, y:800, type:"stone", image:stone}; tiles.push(tile129);
+                var tile130 = {x:560, y:880, type:"dirt", image:dirt}; tiles.push(tile130);
+                var tile131 = {x:560, y:960, type:"dirt", image:dirt}; tiles.push(tile131);
+                var tile132 = {x:560, y:1040, type:"grass", image:grass}; tiles.push(tile132);
+                var tile133 = {x:560, y:1120, type:"sand", image:sand}; tiles.push(tile133);
+                var tile134 = {x:560, y:1200, type:"sand", image:sand}; tiles.push(tile134);
+                var tile135 = {x:560, y:1280, type:"water", image:water}; tiles.push(tile135);
+                
+                //collum 9
+                var tile136 = {x:640, y:0, type:"water", image:water}; tiles.push(tile136);
+                var tile137 = {x:640, y:80, type:"sand", image:sand}; tiles.push(tile137);
+                var tile138 = {x:640, y:160, type:"sand", image:sand}; tiles.push(tile138);
+                var tile139 = {x:640, y:240, type:"grass", image:grass}; tiles.push(tile139);
+                var tile140 = {x:640, y:320, type:"dirt", image:dirt}; tiles.push(tile140);
+                var tile141 = {x:640, y:400, type:"dirt", image:dirt}; tiles.push(tile141);
+                var tile142 = {x:640, y:480, type:"stone", image:stone}; tiles.push(tile142);
+                var tile143 = {x:640, y:560, type:"s_stone", image:s_stone}; tiles.push(tile143);
+                var tile144 = {x:640, y:640, type:"s_stone", image:s_stone}; tiles.push(tile144);
+                var tile145 = {x:640, y:720, type:"stone", image:stone}; tiles.push(tile145);
+                var tile146 = {x:640, y:800, type:"dirt", image:dirt}; tiles.push(tile146);
+                var tile147 = {x:640, y:880, type:"dirt", image:dirt}; tiles.push(tile147);
+                var tile148 = {x:640, y:960, type:"grass", image:grass}; tiles.push(tile148);
+                var tile149 = {x:640, y:1040, type:"grass", image:grass}; tiles.push(tile149);
+                var tile150 = {x:640, y:1120, type:"sand", image:sand}; tiles.push(tile150);
+                var tile151 = {x:640, y:1200, type:"water", image:water}; tiles.push(tile151);
+                var tile152 = {x:640, y:1280, type:"water", image:water}; tiles.push(tile152);
+            
+                //collum 10
+                var tile153 = {x:720, y:0, type:"water", image:water}; tiles.push(tile153);
+                var tile154 = {x:720, y:80, type:"sand", image:sand}; tiles.push(tile154);
+                var tile155 = {x:720, y:160, type:"grass", image:grass}; tiles.push(tile155);
+                var tile156 = {x:720, y:240, type:"grass", image:grass}; tiles.push(tile156);
+                var tile157 = {x:720, y:320, type:"dirt", image:dirt}; tiles.push(tile157);
+                var tile158 = {x:720, y:400, type:"stone", image:stone}; tiles.push(tile158);
+                var tile159 = {x:720, y:480, type:"stone", image:stone}; tiles.push(tile159);
+                var tile160 = {x:720, y:560, type:"s_stone", image:s_stone}; tiles.push(tile160);
+                var tile161 = {x:720, y:640, type:"stone", image:stone}; tiles.push(tile161);
+                var tile162 = {x:720, y:720, type:"stone", image:stone}; tiles.push(tile162);
+                var tile163 = {x:720, y:800, type:"dirt", image:dirt}; tiles.push(tile163);
+                var tile164 = {x:720, y:880, type:"grass", image:grass}; tiles.push(tile164);
+                var tile165 = {x:720, y:960, type:"grass", image:grass}; tiles.push(tile165);
+                var tile166 = {x:720, y:1040, type:"sand", image:sand}; tiles.push(tile166);
+                var tile167 = {x:720, y:1120, type:"sand", image:sand}; tiles.push(tile167);
+                var tile168 = {x:720, y:1200, type:"water", image:water}; tiles.push(tile168);
+                var tile169 = {x:720, y:1280, type:"water", image:water}; tiles.push(tile169);
+            
+                //collum 11
+                var tile170 = {x:800, y:0, type:"water", image:water}; tiles.push(tile170);
+                var tile171 = {x:800, y:80, type:"sand", image:sand}; tiles.push(tile171);
+                var tile172 = {x:800, y:160, type:"grass", image:grass}; tiles.push(tile172);
+                var tile173 = {x:800, y:240, type:"grass", image:grass}; tiles.push(tile173);
+                var tile174 = {x:800, y:320, type:"dirt", image:dirt}; tiles.push(tile174);
+                var tile175 = {x:800, y:400, type:"stone", image:stone}; tiles.push(tile175);
+                var tile176 = {x:800, y:480, type:"stone", image:stone}; tiles.push(tile176);
+                var tile177 = {x:800, y:560, type:"stone", image:stone}; tiles.push(tile177);
+                var tile178 = {x:800, y:640, type:"stone", image:stone}; tiles.push(tile178);
+                var tile179 = {x:800, y:720, type:"dirt", image:dirt}; tiles.push(tile179);
+                var tile180 = {x:800, y:800, type:"dirt", image:dirt}; tiles.push(tile180);
+                var tile181 = {x:800, y:880, type:"grass", image:grass}; tiles.push(tile181);
+                var tile182 = {x:800, y:960, type:"sand", image:sand}; tiles.push(tile182);
+                var tile183 = {x:800, y:1040, type:"sand", image:sand}; tiles.push(tile183);
+                var tile184 = {x:800, y:1120, type:"water", image:water}; tiles.push(tile184);
+                var tile185 = {x:800, y:1200, type:"water", image:water}; tiles.push(tile185);
+                var tile186 = {x:800, y:1280, type:"water", image:water}; tiles.push(tile186);
+            
+                //collum 12
+                var tile187 = {x:880, y:0, type:"water", image:water}; tiles.push(tile187);
+                var tile188 = {x:880, y:80, type:"sand", image:sand}; tiles.push(tile188);
+                var tile189 = {x:880, y:160, type:"sand", image:sand}; tiles.push(tile189);
+                var tile190 = {x:880, y:240, type:"grass", image:grass}; tiles.push(tile190);
+                var tile191 = {x:880, y:320, type:"dirt", image:dirt}; tiles.push(tile191);
+                var tile192 = {x:880, y:400, type:"dirt", image:dirt}; tiles.push(tile192);
+                var tile193 = {x:880, y:480, type:"dirt", image:dirt}; tiles.push(tile193);
+                var tile194 = {x:880, y:560, type:"dirt", image:dirt}; tiles.push(tile194);
+                var tile195 = {x:880, y:640, type:"dirt", image:dirt}; tiles.push(tile195);
+                var tile196 = {x:880, y:720, type:"dirt", image:dirt}; tiles.push(tile196);
+                var tile197 = {x:880, y:800, type:"grass", image:grass}; tiles.push(tile197);
+                var tile198 = {x:880, y:880, type:"grass", image:grass}; tiles.push(tile198);
+                var tile199 = {x:880, y:960, type:"sand", image:sand}; tiles.push(tile199);
+                var tile200 = {x:880, y:1040, type:"water", image:water}; tiles.push(tile200);
+                var tile201 = {x:880, y:1120, type:"water", image:water}; tiles.push(tile201);
+                var tile202 = {x:880, y:1200, type:"water", image:water}; tiles.push(tile202);
+                var tile203 = {x:880, y:1280, type:"water", image:water}; tiles.push(tile203);
+            
+                //collum 13
+                var tile204 = {x:960, y:0, type:"water", image:water}; tiles.push(tile204);
+                var tile205 = {x:960, y:80, type:"water", image:water}; tiles.push(tile205);
+                var tile206 = {x:960, y:160, type:"sand", image:sand}; tiles.push(tile206);
+                var tile207 = {x:960, y:240, type:"grass", image:grass}; tiles.push(tile207);
+                var tile208 = {x:960, y:320, type:"grass", image:grass}; tiles.push(tile208);
+                var tile209 = {x:960, y:400, type:"grass", image:grass}; tiles.push(tile209);
+                var tile210 = {x:960, y:480, type:"dirt", image:dirt}; tiles.push(tile210);
+                var tile211 = {x:960, y:560, type:"dirt", image:dirt}; tiles.push(tile211);
+                var tile212 = {x:960, y:640, type:"grass", image:grass}; tiles.push(tile212);
+                var tile213 = {x:960, y:720, type:"grass", image:grass}; tiles.push(tile213);
+                var tile214 = {x:960, y:800, type:"grass", image:grass}; tiles.push(tile214);
+                var tile215 = {x:960, y:880, type:"sand", image:sand}; tiles.push(tile215);
+                var tile216 = {x:960, y:960, type:"sand", image:sand}; tiles.push(tile216);
+                var tile217 = {x:960, y:1040, type:"water", image:water}; tiles.push(tile217);
+                var tile218 = {x:960, y:1120, type:"water", image:water}; tiles.push(tile218);
+                var tile219 = {x:960, y:1200, type:"water", image:water}; tiles.push(tile219);
+                var tile220 = {x:960, y:1280, type:"water", image:water}; tiles.push(tile220);
+            
+                //collum 14
+                var tile221 = {x:1040, y:0, type:"water", image:water}; tiles.push(tile221);
+                var tile222 = {x:1040, y:80, type:"water", image:water}; tiles.push(tile222);
+                var tile223 = {x:1040, y:160, type:"sand", image:sand}; tiles.push(tile223);
+                var tile224 = {x:1040, y:240, type:"sand", image:sand}; tiles.push(tile224);
+                var tile225 = {x:1040, y:320, type:"sand", image:sand}; tiles.push(tile225);
+                var tile226 = {x:1040, y:400, type:"grass", image:grass}; tiles.push(tile226);
+                var tile227 = {x:1040, y:480, type:"grass", image:grass}; tiles.push(tile227);
+                var tile228 = {x:1040, y:560, type:"grass", image:grass}; tiles.push(tile228);
+                var tile229 = {x:1040, y:640, type:"grass", image:grass}; tiles.push(tile229);
+                var tile230 = {x:1040, y:720, type:"sand", image:sand}; tiles.push(tile230);
+                var tile231 = {x:1040, y:800, type:"sand", image:sand}; tiles.push(tile231);
+                var tile232 = {x:1040, y:880, type:"sand", image:sand}; tiles.push(tile232);
+                var tile233 = {x:1040, y:960, type:"water", image:water}; tiles.push(tile233);
+                var tile234 = {x:1040, y:1040, type:"water", image:water}; tiles.push(tile234);
+                var tile235 = {x:1040, y:1120, type:"water", image:water}; tiles.push(tile235);
+                var tile236 = {x:1040, y:1200, type:"water", image:water}; tiles.push(tile236);
+                var tile237 = {x:1040, y:1280, type:"water", image:water}; tiles.push(tile237);
+            
+                //collum 15
+                var tile238 = {x:1120, y:0, type:"water", image:water}; tiles.push(tile238);
+                var tile239 = {x:1120, y:80, type:"water", image:water}; tiles.push(tile239);
+                var tile240 = {x:1120, y:160, type:"water", image:water}; tiles.push(tile240);
+                var tile241 = {x:1120, y:240, type:"water", image:water}; tiles.push(tile241);
+                var tile242 = {x:1120, y:320, type:"sand", image:sand}; tiles.push(tile242);
+                var tile243 = {x:1120, y:400, type:"sand", image:sand}; tiles.push(tile243);
+                var tile244 = {x:1120, y:480, type:"sand", image:sand}; tiles.push(tile244);
+                var tile245 = {x:1120, y:560, type:"grass", image:grass}; tiles.push(tile245);
+                var tile246 = {x:1120, y:640, type:"grass", image:grass}; tiles.push(tile246);
+                var tile247 = {x:1120, y:720, type:"sand", image:sand}; tiles.push(tile247);
+                var tile248 = {x:1120, y:800, type:"water", image:water}; tiles.push(tile248);
+                var tile249 = {x:1120, y:880, type:"water", image:water}; tiles.push(tile249);
+                var tile250 = {x:1120, y:960, type:"water", image:water}; tiles.push(tile250);
+                var tile251 = {x:1120, y:1040, type:"water", image:water}; tiles.push(tile251);
+                var tile252 = {x:1120, y:1120, type:"sand", image:sand}; tiles.push(tile252);
+                var tile253 = {x:1120, y:1200, type:"water", image:water}; tiles.push(tile253);
+                var tile254 = {x:1120, y:1280, type:"water", image:water}; tiles.push(tile254);
+                
+                //collum 16
+                var tile255 = {x:1200, y:0, type:"water", image:water}; tiles.push(tile255);
+                var tile256 = {x:1200, y:80, type:"water", image:water}; tiles.push(tile256);
+                var tile257 = {x:1200, y:160, type:"water", image:water}; tiles.push(tile257);
+                var tile258 = {x:1200, y:240, type:"water", image:water}; tiles.push(tile258);
+                var tile259 = {x:1200, y:320, type:"water", image:water}; tiles.push(tile259);
+                var tile260 = {x:1200, y:400, type:"water", image:water}; tiles.push(tile260);
+                var tile261 = {x:1200, y:480, type:"sand", image:sand}; tiles.push(tile261);
+                var tile262 = {x:1200, y:560, type:"sand", image:sand}; tiles.push(tile262);
+                var tile263 = {x:1200, y:640, type:"sand", image:sand}; tiles.push(tile263);
+                var tile264 = {x:1200, y:720, type:"sand", image:sand}; tiles.push(tile264);
+                var tile265 = {x:1200, y:800, type:"jerhy", image:water}; tiles.push(tile265);
+                var tile266 = {x:1200, y:880, type:"jerhy", image:water}; tiles.push(tile266);
+                var tile267 = {x:1200, y:960, type:"jerhy", image:water}; tiles.push(tile267);
+                var tile268 = {x:1200, y:1040, type:"sand", image:sand}; tiles.push(tile268);
+                var tile269 = {x:1200, y:1120, type:"sand", image:sand}; tiles.push(tile269);
+                var tile270 = {x:1200, y:1200, type:"water", image:water}; tiles.push(tile270);
+                var tile271 = {x:1200, y:1280, type:"water", image:water}; tiles.push(tile271);
+            
+                //collum 17
+                var tile272 = {x:1280, y:0, type:"water", image:water}; tiles.push(tile272);
+                var tile273 = {x:1280, y:80, type:"water", image:water}; tiles.push(tile273);
+                var tile274 = {x:1280, y:160, type:"water", image:water}; tiles.push(tile274);
+                var tile275 = {x:1280, y:240, type:"water", image:water}; tiles.push(tile275);
+                var tile276 = {x:1280, y:320, type:"water", image:water}; tiles.push(tile276);
+                var tile277 = {x:1280, y:400, type:"water", image:water}; tiles.push(tile277);
+                var tile278 = {x:1280, y:480, type:"water", image:water}; tiles.push(tile278);
+                var tile279 = {x:1280, y:560, type:"water", image:water}; tiles.push(tile279);
+                var tile280 = {x:1280, y:640, type:"water", image:water}; tiles.push(tile280);
+                var tile281 = {x:1280, y:720, type:"water", image:water}; tiles.push(tile281);
+                var tile282 = {x:1280, y:800, type:"water", image:water}; tiles.push(tile282);
+                var tile283 = {x:1280, y:880, type:"water", image:water}; tiles.push(tile283);
+                var tile284 = {x:1280, y:960, type:"water", image:water}; tiles.push(tile284);
+                var tile285 = {x:1280, y:1040, type:"water", image:water}; tiles.push(tile285);
+                var tile286 = {x:1280, y:1120, type:"sand", image:sand}; tiles.push(tile286);
+                var tile287 = {x:1280, y:1200, type:"water", image:water}; tiles.push(tile287);
+                var tile288 = {x:1280, y:1280, type:"water", image:water}; tiles.push(tile288);
+            
+                //ship
+                var tile289 = {x:1120, y:1040, type:"ship", image:ship}; tiles.push(tile289);
+            
+                //player
+                var tile290 = {x:960, y:880, type:"player", image:player_front}; tiles.push(tile290);
+            
+                //crab 1360
+                var tile291 = {x:1360, y:1360, type:"crab", image:crab}; tiles.push(tile291);
+            
+                //chopper
+                var tile292 = {x:1360, y:400, type:"chopper", image:chopper}; tiles.push(tile292);
+            
+                //crab 2
+                var tile293 = {x:0, y:0, type:"crab", image:crab}; tiles.push(tile293);
+            
+                //jerhy x:1120, y:1280
+                var tile294 = {x:0, y:0, type:"jerhy", image:jerhy}; tiles.push(tile294);
+            
+            //render
+            window.setInterval(function(){ render(); }, 1);
+            function render() {
+                //clear
+                ctx.beginPath();
+                ctx.rect(0, 0, 1360, 1360);
+                ctx.fillStyle = "white";
+                ctx.fill();
+                
+                //render player
+                tile290.x = player_x;
+                tile290.y = player_y;
+                
+                tiles.push(tile290);
+                
+                //render world
+                world();
+                if (shootVis == true) {
+                ctx.beginPath();
+                ctx.lineWidth = 25;
+                ctx.strokeStyle = "red";
+                ctx.moveTo(laserStart.x,laserStart.y);
+                ctx.lineTo(laserEnd.x,laserEnd.y);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.lineWidth = 15;
+                ctx.strokeStyle = "orange";
+                ctx.moveTo(laserStart.x,laserStart.y);
+                ctx.lineTo(laserEnd.x,laserEnd.y);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "yellow";
+                ctx.moveTo(laserStart.x,laserStart.y);
+                ctx.lineTo(laserEnd.x,laserEnd.y);
+                ctx.stroke();
+                }
+            }
+            
+            var crab1 = true;
+            //tile293
+            window.setInterval(function(){ crabb(); }, 1);
+            function crabb() {
+                if (player_x < tile291.x) {
+                    tile291.x = tile291.x - 0.5;
+                    tiles.push(tile291);
+                }
+                
+                if (player_x > tile291.x) {
+                    tile291.x = tile291.x + 0.5;
+                    tiles.push(tile291);
+                }
+                
+                if (player_y > tile291.y) {
+                    tile291.y = tile291.y + 0.5;
+                    tiles.push(tile291);
+                }
+                
+                if (player_y < tile291.y) {
+                    tile291.y = tile291.y - 0.5;
+                    tiles.push(tile291);
+                }
+                
+                if (player_y == tile291.y && player_x == tile291.x) {
+                    gameOver();
+                }
+                
+                //crab 2
+                if (player_x < tile293.x) {
+                    tile293.x = tile293.x - 0.5;
+                    tiles.push(tile293);
+                }
+                
+                if (player_x > tile293.x) {
+                    tile293.x = tile293.x + 0.5;
+                    tiles.push(tile291);
+                }
+                
+                if (player_y > tile293.y) {
+                    tile293.y = tile293.y + 0.5;
+                    tiles.push(tile293);
+                }
+                
+                if (player_y < tile293.y) {
+                    tile293.y = tile293.y - 0.5;
+                    tiles.push(tile293);
+                }
+                
+                if (player_y == tile293.y && player_x == tile293.x) {
+                    gameOver();
+                }
+                
+            }
+            
+            var seconds = 30;
+            var seaLevel = 0;
+            window.setInterval(function(){ timer(); }, 1000);
+            function timer() {
+                seconds = seconds - 1;
+                document.getElementById("timer").innerHTML = seconds;
+                
+                if (seconds == 0) {
+                    seconds = 30;
+                    seaLevel = seaLevel + 1;
+                    document.getElementById("timer").innerHTML = seconds;
+                }
+                
+                if (player_x == 1120 && player_y == 1120) {
+                    document.getElementbyId("marq").display = inline;
+                }
+                
+            }
+            function jerhy() {
+                document.getElementbyId("marq").style.display = inline;
+            }
+            function gameOver() {
+                window.location = "gameover.html";
+            }
+            
+            var oneTime = true;
+            window.setInterval(function(){ chopperFlop(); }, 1);
+            function chopperFlop() {
+                if (seaLevel == 5) {
+                    document.getElementById("timer").innerHTML = "";
+                    
+                    tile292.x = tile292.x - 1;
+                    
+                    tile291.y = tile291.y + 2.5;
+                    
+                    if (player_x < tile291.x) {
+                    tile291.x = tile291.x + 1;
+                    tiles.push(tile291);
+                }
+                
+                if (player_x > tile291.x) {
+                    tile291.x = tile291.x - 1;
+                    tiles.push(tile291);
+                    tile290.image = player_front;
+                }
+                    
+                if (player_x == tile292.x + 60) {
+                    player_x = player_x - 1;
+                    if (oneTime) {
+                        player_y = player_y + 1;
+                        oneTime = false;
+                    }
+                }
+                }
+                
+                
+                if (seaLevel == 5 && seconds == 20) {
+                    alert("you won!");
+                    window.location = "gameover.html";
+                }
+            }
+            
+            
+            function world() {
+                var newTileNum = 0;
+                var changeTile = tiles[newTileNum];
+                var loop = true;
+                while (loop) {
+                    if (newTileNum < 294) {
+                        changeTile = tiles[newTileNum];
+                        ctx.drawImage(changeTile.image, changeTile.x, changeTile.y);
+                        
+                        if (changeTile.type == "water" && changeTile.x == player_x && changeTile.y == player_y) {
+                            gameOver();
+                        }
+                        
+                        if (seaLevel > 0 && changeTile.type == "sand") {
+                            changeTile.type = "water";
+                            changeTile.image = water;
+                        }
+                        
+                        if (seaLevel > 1 && changeTile.type == "grass") {
+                            changeTile.type = "water";
+                            changeTile.image = water;
+                        }
+                        
+                        if (seaLevel > 1 && changeTile.type == "ship") {
+                            changeTile.type = "water";
+                            changeTile.image = water;
+                        }
+                        
+                        if (seaLevel > 2 && changeTile.type == "dirt") {
+                            changeTile.type = "water";
+                            changeTile.image = water;
+                        }
+                        
+                        if (seaLevel > 3 && changeTile.type == "stone") {
+                            changeTile.type = "water";
+                            changeTile.image = water;
+                        }
+                        
+                        newTileNum = newTileNum + 1;
+                    } else {
+                        loop = false;
+                    }
+                    
+                }
+            }
+        </script>
+    
+    </body>
+</html>
